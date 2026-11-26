@@ -60,7 +60,9 @@ vol_newton <- function(hi, di) {
 # ---- Leitura da base de cubagem --------------------------------------------
 # Ajuste o caminho abaixo para onde está a base no seu repositório
 # (ex.: "data/cubagem.csv" ou "cubagem.xlsx" lido via readxl).
-cubagem <- read.csv("cubagem.csv", encoding = "UTF-8", check.names = TRUE)
+# Executar a partir da raiz do repositorio: Rscript scripts/02_diferencas_por_classe_dap.R
+dir.create("resultados/tabelas", recursive = TRUE, showWarnings = FALSE)
+cubagem <- as.data.frame(readxl::read_excel("dados/cubagem.xlsx"))
 names(cubagem)[1] <- "Talhao"
 
 # ---- Volume por árvore pelos três métodos ----------------------------------
@@ -131,5 +133,5 @@ cat("Classe com MAIOR diferença média (Smalian x Huber):",
 cat("\nCorrelação (Pearson) entre DAP e diferença % Smalian-Huber (por árvore):",
     round(cor(resultados$dap_cm, resultados$dif_smalian_huber_pct), 3), "\n")
 
-write.csv(resultados, "diferencas_por_arvore.csv", row.names = FALSE)
-write.csv(tabela_classes, "diferencas_por_classe_dap.csv", row.names = FALSE)
+write.csv(resultados, "resultados/tabelas/diferencas_por_arvore.csv", row.names = FALSE)
+write.csv(tabela_classes, "resultados/tabelas/diferencas_por_classe_dap.csv", row.names = FALSE)
