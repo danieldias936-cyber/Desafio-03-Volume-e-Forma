@@ -45,7 +45,10 @@ library(dplyr)
 library(writexl)
 
 # ---- 1. Leitura dos dados -----------------------------------------------------
-caminho_arquivo <- "cubagem.xlsx"   # ajustar caminho se necessario
+# Executar a partir da raiz do repositorio: Rscript scripts/01_cubagem_forma.R
+dir.create("resultados/tabelas", recursive = TRUE, showWarnings = FALSE)
+dir.create("resultados/figuras", recursive = TRUE, showWarnings = FALSE)
+caminho_arquivo <- "dados/cubagem.xlsx"
 
 dados <- read_excel(caminho_arquivo)
 names(dados) <- c("Talhao", "Arv", "hi", "di", "DAP", "HT")  # padroniza nomes (remove acento)
@@ -201,8 +204,8 @@ print(summary(resultados[, c("volume_smalian_m3", "volume_huber_m3", "volume_new
                               "fator_forma", "quociente_forma")]))
 
 # ---- 9. Exportacao do arquivo consolidado --------------------------------------
-write.csv(resultados, "resultado_cubagem_forma.csv", row.names = FALSE)
-write_xlsx(resultados, "resultado_cubagem_forma.xlsx")
+write.csv(resultados, "resultados/tabelas/resultado_cubagem_forma.csv", row.names = FALSE)
+write_xlsx(resultados, "resultados/tabelas/resultado_cubagem_forma.xlsx")
 
 cat("\nArquivo consolidado exportado: resultado_cubagem_forma.csv / .xlsx\n")
 
@@ -243,7 +246,7 @@ cat("Erro no volume TOTAL do povoamento (soma das 36 arvores):", round(erro_tota
 
 # ---- Graficos (Parte A e B) -----------------------------------------------------
 # Comparacao dos 3 metodos
-png("comparacao_metodos.png", width = 900, height = 600)
+png("resultados/figuras/comparacao_metodos.png", width = 900, height = 600)
 plot(resultados$volume_smalian_m3, resultados$volume_huber_m3,
      xlab = "Volume Smalian (m3)", ylab = "Volume Huber / Newton (m3)",
      main = "Comparacao entre metodos de cubagem", pch = 16, col = "blue")
@@ -254,7 +257,7 @@ legend("topleft", legend = c("Huber", "Newton", "linha 1:1"),
 dev.off()
 
 # Fator de forma x DAP e altura
-png("fator_forma_vs_dap_altura.png", width = 1000, height = 500)
+png("resultados/figuras/fator_forma_vs_dap_altura.png", width = 1000, height = 500)
 par(mfrow = c(1, 2))
 plot(resultados$dap_cm, resultados$fator_forma, xlab = "DAP (cm)", ylab = "Fator de forma",
      main = "Fator de forma x DAP", pch = 16)
@@ -265,7 +268,7 @@ abline(lm(fator_forma ~ altura_m, data = resultados), col = "red")
 dev.off()
 
 # Quociente de forma x DAP e altura
-png("quociente_forma_vs_dap_altura.png", width = 1000, height = 500)
+png("resultados/figuras/quociente_forma_vs_dap_altura.png", width = 1000, height = 500)
 par(mfrow = c(1, 2))
 plot(resultados$dap_cm, resultados$quociente_forma, xlab = "DAP (cm)", ylab = "Quociente de forma (Girard)",
      main = "Quociente de forma x DAP", pch = 16)

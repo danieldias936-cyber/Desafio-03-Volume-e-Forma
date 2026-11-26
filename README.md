@@ -1,79 +1,120 @@
-# Desafio 03 — Forma e Volume da Árvore
+<div align="center">
 
-Cubagem rigorosa (Smalian, Huber e Newton), fator de forma e quociente de forma de Girard, aplicados às 36 árvores cubadas do talhão 8.
+# 🌲 Desafio 03 — Volume e forma
 
-## Conteúdo do repositório
+**Cubagem rigorosa, fator de forma e quociente de forma**
 
-| Arquivo | Descrição |
-|---|---|
-| `desafio03_cubagem_forma.R` | Script R comentado, com as funções de cubagem (Smalian, Huber, Newton), a função de interpolação de diâmetro e os cálculos de fator e quociente de forma. |
-| `cubagem.xlsx` | Base de dados de entrada, com a cubagem rigorosa das 36 árvores. |
-| `resultado_cubagem_forma.csv` / `.xlsx` | Arquivo de saída consolidado, uma linha por árvore. |
-| `Relatorio_curto.docx` | Relatório com a comparação entre métodos, a análise de forma e a discussão sobre o efeito da forma na estimativa de volume. |
+![R](https://img.shields.io/badge/R-4.3-276DC3?logo=r&logoColor=white) ![Disciplina](https://img.shields.io/badge/Mensura%C3%A7%C3%A3o%20Florestal-ICA%2FUFMG-2E7D32) ![Semestre](https://img.shields.io/badge/semestre-2026%2F2-6D4C41) ![Status](https://img.shields.io/badge/status-conclu%C3%ADdo-success)
 
-## Estratégias adotadas
+*Disciplina Mensuração Florestal · Programa de Pós-Graduação em Ciências Florestais · ICA/UFMG*
 
-### 1. Diâmetro do meio da seção (métodos de Huber e Newton)
+</div>
 
-Os dados foram coletados no padrão Smalian: apenas os diâmetros nas extremidades de cada seção do fuste foram medidos em campo. Como o diâmetro no ponto médio da seção, exigido pelos métodos de Huber e de Newton, não está disponível na base, ele foi **estimado por interpolação linear do diâmetro em função da altura**, entre os dois pontos medidos que delimitam a seção.
+## 📋 Objetivo
 
-Como o ponto médio de uma seção em altura é, por definição, `h_mid = (h0 + h1) / 2`, essa interpolação se reduz algebricamente à média aritmética simples dos diâmetros extremos:
+Calcular o volume das árvores cubadas pelos métodos de Smalian, Huber e Newton, determinar o fator de forma e o quociente de forma de Girard e analisar como a diferença entre os métodos varia com o diâmetro.
 
+## 🗂️ Dados
+
+Cubagem rigorosa de 36 árvores do talhão 8 (1.125 seções medidas).
+
+Arquivo: [`dados/cubagem.xlsx`](dados/cubagem.xlsx).
+
+## 🔧 Métodos
+
+- **Smalian, Huber e Newton**, com o diâmetro no meio da seção obtido por interpolação linear entre os diâmetros extremos.
+- Trecho entre o solo e a primeira medição (0,10 m) desconsiderado.
+- **Fator de forma** = volume real (Smalian) ÷ volume do cilindro (g<sub>DAP</sub> × HT).
+- **Quociente de forma de Girard** = diâmetro a 5,2 m ÷ DAP, com o diâmetro a 5,2 m interpolado.
+- Diferenças percentuais entre métodos agrupadas por classe de DAP.
+
+## 📈 Principais resultados
+
+| Indicador | Média | Amplitude |
+|---|:-:|:-:|
+| Volume Smalian (m³) | 0,229 | 0,019 – 0,385 |
+| Fator de forma | 0,475 | 0,401 – 0,565 |
+| Quociente de forma | 0,884 | 0,766 – 0,923 |
+
+| Classe de DAP (cm) | Árvores | Diferença média Smalian–Huber (%) |
+|:-:|:-:|:-:|
+| 4–6 | 1 | 11,03 |
+| 6–8 | 1 | 6,70 |
+| 10–12 | 3 | 1,07 |
+| 12–14 | 7 | 0,81 |
+| 14–16 | 7 | 0,49 |
+| 16–18 | 13 | 0,39 |
+| 18–20 | 4 | 0,34 |
+
+- Os três métodos convergem nas árvores maiores; a diferença cresce nas árvores finas.
+- Correlação entre DAP e diferença Smalian–Huber: r = −0,77.
+
+<p align="center">
+  <img src="resultados/figuras/comparacao_metodos.png" alt="Volume por Huber e Newton contra Smalian (linha 1:1)" width="720"><br>
+  <sub><b>Volume por Huber e Newton contra Smalian (linha 1:1)</b></sub>
+</p>
+
+<p align="center">
+  <img src="resultados/figuras/fator_forma_vs_dap_altura.png" alt="Fator de forma em função do DAP e da altura" width="720"><br>
+  <sub><b>Fator de forma em função do DAP e da altura</b></sub>
+</p>
+
+## 📁 Estrutura do repositório
+
+```text
+desafio-03-volume-e-forma/
+├── dados/
+│   └── cubagem.xlsx                        # 36 árvores cubadas
+├── scripts/
+│   ├── 01_cubagem_forma.R                  # Smalian, Huber, Newton, fator e quociente de forma
+│   └── 02_diferencas_por_classe_dap.R      # diferença entre métodos por classe de DAP
+├── resultados/
+│   ├── tabelas/                            # resultados por árvore e por classe
+│   └── figuras/
+└── docs/
+    ├── enunciado.pdf
+    ├── relatorio_curto.docx
+    ├── respostas.pdf
+    ├── item6_diferencas_por_classe_dap.md
+    └── metodologia_detalhada.md
 ```
-d_mid = (d0 + d1) / 2
-```
 
-Essa estratégia foi escolhida por não introduzir nenhuma hipótese de forma geométrica adicional (cônica, paraboloide, neiloide) além da linearidade já implícita entre dois pontos consecutivos efetivamente medidos em campo, e por permitir o reaproveitamento da mesma lógica de interpolação em outras partes do desafio, atendendo à especificação técnica do script.
+## ▶️ Como executar
 
-Implementação:
+A partir da raiz do repositório:
 
 ```r
-diametro_meio_secao <- function(h0, h1, d0, d1) {
-  h_mid <- (h0 + h1) / 2
-  d0 + (d1 - d0) * (h_mid - h0) / (h1 - h0)
-}
+install.packages(c("readxl", "writexl", "dplyr"))
 ```
 
-### 2. Trecho entre o solo (0 m) e a primeira medição (0,10 m)
-
-Esse trecho foi desconsiderado no cálculo do volume total de cada árvore (o volume é a soma das seções de 0,10 m até o topo, `hi = HT`). Nenhuma árvore possui diâmetro medido em `hi = 0`, e estimar esse valor exigiria extrapolação sem respaldo nos dados. Além disso, o comprimento do trecho é irrisório frente à altura total das árvores, representando um viés desprezível no volume total (inferior a 0,5%, em ordem de grandeza).
-
-### 3. Diâmetro na altura de Girard (5,2 m)
-
-Nenhuma árvore possui medição exatamente em 5,2 m. O diâmetro nessa altura foi obtido por **interpolação linear** entre os dois pontos medidos imediatamente abaixo e acima de 5,2 m, usando a mesma função de interpolação empregada na estimativa do diâmetro do meio da seção:
-
-```r
-diametro_interpolado <- function(hi, di, altura_alvo) {
-  idx_exato <- which(abs(hi - altura_alvo) < 1e-9)
-  if (length(idx_exato) > 0) return(di[idx_exato[1]])
-  idx_sup <- which(hi > altura_alvo)[1]
-  idx_inf <- idx_sup - 1
-  h0 <- hi[idx_inf]; h1 <- hi[idx_sup]
-  d0 <- di[idx_inf]; d1 <- di[idx_sup]
-  d0 + (d1 - d0) * (altura_alvo - h0) / (h1 - h0)
-}
+```bash
+Rscript scripts/01_cubagem_forma.R
+Rscript scripts/02_diferencas_por_classe_dap.R
 ```
 
-Verificou-se, antes do cálculo, que a altura de 5,2 m está contida no intervalo medido em todas as 36 árvores (a menor altura total do talhão é 13,6 m), de modo que não houve necessidade de extrapolação em nenhum caso.
+## 📄 Documentos
 
-## Como executar
+- 📝 [Enunciado](docs/enunciado.pdf)
+- 📊 [Relatório curto](docs/relatorio_curto.docx)
+- ✅ [Respostas](docs/respostas.pdf)
+- 📐 [Diferenças por classe de DAP](docs/item6_diferencas_por_classe_dap.md)
+- 🔍 [Metodologia detalhada](docs/metodologia_detalhada.md)
 
-```r
-# dentro da pasta do repositório
-source("desafio03_cubagem_forma.R")
-```
+## 🧭 Série de desafios
 
-O script lê `cubagem.xlsx`, processa as 36 árvores automaticamente (sem números de árvore fixos no código) e gera `resultado_cubagem_forma.csv` e `resultado_cubagem_forma.xlsx` na mesma pasta.
+| # | Desafio | |
+|:-:|---|:-:|
+| 01 | [Diâmetro](https://github.com/danieldias936-cyber/desafio-01-diametro) | |
+| 02 | [Altura e relação hipsométrica](https://github.com/danieldias936-cyber/desafio-02-altura) | |
+| **03** | **Volume e forma** | 📍 você está aqui |
+| 04 | [Volume reduzido e equações de volume](https://github.com/danieldias936-cyber/desafio-04-volume-reduzido-e-tabela) | |
+| 05 | [Taper e sortimento](https://github.com/danieldias936-cyber/desafio-05-taper-e-sortimento) | |
+| 06 | [Amostragem de Bitterlich](https://github.com/danieldias936-cyber/desafio-06-bitterlich) | |
+| 07 | Classificação de sítios florestais | ⏳ |
+| 08 | [Validação do índice de sítio](https://github.com/danieldias936-cyber/desafio-08-validacao-sitio) | |
+| 09 | [Crescimento e produção (Clutter)](https://github.com/danieldias936-cyber/desafio-09-modelo-clutter) | |
 
-## Colunas do arquivo de saída
+## 👤 Autor
 
-| Coluna | Descrição |
-|---|---|
-| `arvore` | Identificação da árvore (Arv) |
-| `dap_cm` | Diâmetro à altura do peito (cm) |
-| `altura_m` | Altura total da árvore (m) |
-| `volume_smalian_m3` | Volume total pelo método de Smalian (m³) |
-| `volume_huber_m3` | Volume total pelo método de Huber (m³) |
-| `volume_newton_m3` | Volume total pelo método de Newton (m³) |
-| `fator_forma` | Volume real (Smalian) / volume do cilindro de referência (g_DAP × HT) |
-| `quociente_forma` | Diâmetro a 5,2 m / DAP |
+**Daniel Dias** · [@danieldias936-cyber](https://github.com/danieldias936-cyber)  
+Mestrado em Ciências Florestais — ICA/UFMG, Montes Claros (MG)
